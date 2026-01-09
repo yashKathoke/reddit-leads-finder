@@ -1,3 +1,5 @@
 /venv
 /others
 /data
+
+__pycache__

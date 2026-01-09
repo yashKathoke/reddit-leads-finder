@@ -74,11 +74,12 @@ class RedditCollector:
             soap = BeautifulSoup(raw_html, "html.parser")
             clean_text = soap.get_text(separator=" ", strip=True)
 
+
             posts.append({
                 "id": entry.id,
                 "title": entry.title,
                 "link": entry.link,
-                "summary": entry.summary,
+                "summary": clean_text,
                 "subreddit": subreddit,
                 "captured_at": datetime.now().isoformat()
             })
@@ -96,6 +97,26 @@ class RedditCollector:
         with open(self.storage_file, 'w') as f:
             json.dump(self.data, f, indent=4)
         return added
+    
+    def run(self, subreddits: List[str], delay: int = 15):
+        """
+        Runs the collector for a list of subreddits with a jittered delay.
+        """
+        print(f"--- Starting Collector Run for {len(subreddits)} subreddits ---")
+        for sub in subreddits:
+            # HUMAN JITTER: Randomly wait BEFORE request to break patterns
+            jitter = random.uniform(delay * 0.5, delay * 1.5)
+            print(f"[*] Mimicking human pause: {jitter:.2f}s...")
+            time.sleep(jitter)
+            
+            print(f"[*] Fetching posts from r/{sub}...")
+            posts = self.fetch(sub)
+            if posts:
+                added = self.save(posts)
+                print(f"[+] r/{sub}: Found {len(posts)}, Added {added} new posts.")
+            else:
+                print(f"[-] r/{sub}: No posts found or an error occurred.")
+        print("--- Collector Run Finished ---")
 
 def main():
     parser = argparse.ArgumentParser(description="🚀 Stealth Reddit Collector")
