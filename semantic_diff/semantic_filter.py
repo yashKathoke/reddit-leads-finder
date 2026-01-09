@@ -8,9 +8,9 @@ import os
 from sentence_transformers import SentenceTransformer, util
 
 class SemanticFilter:
-    def __init__(self, model_name='all-MiniLM-L6-v2', input_file="data/filtered_posts.json"):
+    def __init__(self, model_name='all-MiniLM-L6-v2', input_file="data/filtered_posts.json", output_file="data/semantic_leads.json"):
         self.input_file = input_file
-        self.output_file = "data/semantic_leads.json"
+        self.output_file = output_file
         
         # This downloads the model on the first run (local hereafter)
         print(f"[*] Loading local AI model ({model_name})...")
